@@ -1,0 +1,8 @@
+CREATE TABLE documents
+(
+    id BIGSERIAL PRIMARY KEY,
+
+    file_name VARCHAR(255) NOT NULL,
+
+    uploaded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
