@@ -25,15 +25,7 @@ public class DocumentController {
 
     @PostMapping("/upload")
     public String upload(@RequestParam MultipartFile file) {
-
-        System.out.println("Filename : " + file.getOriginalFilename());
-        System.out.println("Size     : " + file.getSize());
-        System.out.println("Type     : " + file.getContentType());
-    try {
-        Thread.sleep(60_000);
-    } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-    }
+        documentService.upload(file);
         return "Uploaded";
     }
 
