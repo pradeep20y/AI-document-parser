@@ -3,6 +3,8 @@ package com.rag.parser.service;
 import com.rag.parser.entity.Document;
 import com.rag.parser.exception.EmptyFileException;
 import com.rag.parser.repository.DocumentRepository;
+import com.rag.parser.storage.StorageService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +16,8 @@ import java.time.LocalDateTime;
 public class DocumentService {
 
     private final DocumentRepository documentRepository;
-
+    private final StorageService storageService;
+    
     public Document save(String fileName) {
         Document document = new Document();
 
@@ -28,7 +31,7 @@ public class DocumentService {
         if (file.isEmpty()){
             throw new EmptyFileException("Uploaded file is empty.");
         }
-
+        String storedFileName = storageService.store(file);
 
 
     }
