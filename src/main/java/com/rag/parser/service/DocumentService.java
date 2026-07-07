@@ -37,7 +37,6 @@ public class DocumentService {
         String storedFileName = storageService.store(file);
         InputStream inputStream = file.getInputStream();
 
-        pdfParserService.extractText(inputStream);
-
+        System.out.println(pdfParserService.extractText(inputStream).get(35));
     }
 }
