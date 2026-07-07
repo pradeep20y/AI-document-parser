@@ -1,5 +1,7 @@
 package com.rag.parser.controller;
 
+import java.io.IOException;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +26,7 @@ public class DocumentController {
     }
 
     @PostMapping("/upload")
-    public String upload(@RequestParam MultipartFile file) {
+    public String upload(@RequestParam MultipartFile file) throws IOException {
         documentService.upload(file);
         return "Uploaded";
     }
