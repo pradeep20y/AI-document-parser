@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
  
@@ -19,7 +20,15 @@ public class PdfParserService {
                 Loader.loadPDF(new RandomAccessReadBuffer(inputStream))
                 
         ) {
-            System.out.println(document.getNumberOfPages());
+            PDDocumentInformation info = document.getDocumentInformation();
+            System.out.println(
+                info.getTitle() +
+                info.getAuthor() +
+                info.getSubject() +
+                info.getKeywords() +
+                info.getCreator() +
+                info.getProducer()
+            );
             PDFTextStripper stripper = new PDFTextStripper();
             List<String> pages = new ArrayList<>();
             int totalPage = document.getNumberOfPages();
