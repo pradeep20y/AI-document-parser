@@ -23,30 +23,63 @@ public class RecursiveChunkingService implements ChunkingService {
 
     private final DocumentSplitter splitter = DocumentSplitters.recursive(CHUNK_SIZE,CHUNK_OVERLAP);
     
-    @Override
-    public List<Chunk> chunk (String text) {
+    private List<Chunk> chunk(String text, int pageNumber, int startingChunkIndex) {
+
         List<Chunk> chunks = new ArrayList<>();
 
         if (text == null || text.isBlank()) {
             return chunks;
         }
 
-        Document document = Document.from(text.trim());
+        Document document = Document.from(text);
+
         List<TextSegment> segments = splitter.split(document);
 
+        int chunkIndex = startingChunkIndex;
+
         for (TextSegment segment : segments) {
-            chunks.add(new Chunk(segment.text()));
+
+            String chunkText = segment.text();
+
+            Chunk chunk = Chunk.builder()
+                    .text(chunkText)
+                    .pageNumber(pageNumber)
+                    .chunkIndex(chunkIndex++)
+                    .characterCount(chunkText.length())
+                    .build();
+
+            chunks.add(chunk);
         }
 
         return chunks;
     }
 
     @Override
-    public List<Chunk> chunkAll(List<String> texts) {
+    public List<Chunk> chunkAll(List<String> pageTexts) {
+
         List<Chunk> allChunks = new ArrayList<>();
-        for (String text : texts) {
-            allChunks.addAll(chunk(text));
+
+        if (pageTexts == null || pageTexts.isEmpty()) {
+            return allChunks;
         }
+
+        int globalChunkIndex = 0;
+
+        for (int pageIndex = 0; pageIndex < pageTexts.size(); pageIndex++) {
+
+            int pageNumber = pageIndex + 1;
+
+            List<Chunk> pageChunks = chunk(
+                    pageTexts.get(pageIndex),
+                    pageNumber,
+                    globalChunkIndex
+            );
+
+            allChunks.addAll(pageChunks);
+
+            globalChunkIndex += pageChunks.size();
+        }
+
         return allChunks;
     }
 } 

@@ -3,12 +3,14 @@ package com.rag.parser.service;
 import com.rag.parser.entity.Chunk;
 import com.rag.parser.entity.Document;
 import com.rag.parser.exception.EmptyFileException;
+import com.rag.parser.repository.ChunkRepository;
 import com.rag.parser.repository.DocumentRepository;
 import com.rag.parser.service.interfaces.ChunkingService;
 import com.rag.parser.storage.StorageService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.util.List;
 public class DocumentService {
 
     private final DocumentRepository documentRepository;
+    private final ChunkRepository chunkRepository;
     private final StorageService storageService;
     private final PdfParserService pdfParserService;
     private final ChunkingService chunkingService;
@@ -35,21 +38,30 @@ public class DocumentService {
         return documentRepository.save(document);
     }
 
+    @Transactional
     public void upload(MultipartFile file) throws IOException{
+
         if (file.isEmpty()){
             throw new EmptyFileException("Uploaded file is empty.");
         }
         String storedFileName = storageService.store(file);
+
+        Document document = new Document();
+        document.setFileName(storedFileName);
+        document.setUploadedAt(LocalDateTime.now());
+        document = documentRepository.save(document);
+
         InputStream inputStream = file.getInputStream();
 
-        List<String> extractedText = pdfParserService.extractText(inputStream);
+        List<String> extractedPage = pdfParserService.extractText(inputStream);
+        List<Chunk> chunks = chunkingService.chunkAll(extractedPage);
 
-        List<Chunk> chunks = chunkingService.chunkAll(extractedText);
-        System.out.println(chunks.size());
-        for (int i=0; i<7; i++) {
-            System.out.println(chunks.get(i));
-            System.out.println("*************************************");
+        for (Chunk chunk : chunks) {
+            System.err.println(chunk);
+            chunk.setDocumentId(document);
         }
+        
+        chunkRepository.saveAll(chunks);
     } 
 
 }
