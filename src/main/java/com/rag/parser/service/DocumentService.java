@@ -58,6 +58,7 @@ public class DocumentService {
 
         for (Chunk chunk : chunks) {
             System.err.println(chunk);
+            System.err.println("*********************************************************************");
             chunk.setDocumentId(document);
         }
         

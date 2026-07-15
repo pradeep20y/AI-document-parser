@@ -19,7 +19,7 @@ import dev.langchain4j.data.segment.TextSegment;
 public class RecursiveChunkingService implements ChunkingService {
 
     private static final int CHUNK_SIZE = 1000;
-    private static final int CHUNK_OVERLAP = 150;
+    private static final int CHUNK_OVERLAP = 200;
 
     private final DocumentSplitter splitter = DocumentSplitters.recursive(CHUNK_SIZE,CHUNK_OVERLAP);
     

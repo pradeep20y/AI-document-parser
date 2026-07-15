@@ -28,3 +28,6 @@ server:
 app:
   storage:
     upload-dir: uploads
+
+gemini:
+  api.key: ${GEMINI_API_KEY}

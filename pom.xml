@@ -72,9 +72,21 @@
 		</dependency>
 
 		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-google-ai-gemini</artifactId>
+			<version>1.15.1</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
 			<version>3.0.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-vector</artifactId>
+			<version>6.5.2.Final</version> <!-- match your existing Hibernate version -->
 		</dependency>
 
 		<dependency>
