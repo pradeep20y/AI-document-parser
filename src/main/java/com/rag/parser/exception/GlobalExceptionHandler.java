@@ -32,5 +32,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<String> handleUploadLimit(MaxUploadSizeExceededException ex) {
         return new ResponseEntity<>(ex.getMessage(),HttpStatusCode.valueOf(413));
+    }
+    
+    @ExceptionHandler(DocumentNotFoundException.class)
+    public ResponseEntity<String> handleFileNotFound(DocumentNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(),HttpStatusCode.valueOf(400));
     }    
 }

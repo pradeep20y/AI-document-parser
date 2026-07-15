@@ -9,4 +9,7 @@ import com.rag.parser.entity.Chunk;
 
 @Repository
 public interface ChunkRepository extends JpaRepository<Chunk, Long> {
- }
+    
+    List<Chunk> findByDocument_IdAndEmbeddingIsNull(Long documentId);
+
+}
