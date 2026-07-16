@@ -13,7 +13,7 @@ import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.output.Response;
- 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,12 +23,13 @@ public class EmbeddingService {
     private final EmbeddingModel embeddingModel;
     private final DocumentRepository documentRepository;
 
+    @Transactional
     public int embedPendingChunks(Long documentId) {
 
         if (!documentRepository.existsById(documentId)) {
             throw new DocumentNotFoundException(documentId + "Not found");
         }
-        List<Chunk> pendingChunks = chunkRepository.findByDocument_IdAndEmbeddingIsNull(documentId);
+        List<Chunk> pendingChunks = chunkRepository.findByDocumentId_IdAndEmbeddingIsNull(documentId);
 
         if (pendingChunks.isEmpty()) {
             return 0;

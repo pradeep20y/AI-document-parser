@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,19 +27,16 @@ public class DocumentService {
     private final StorageService storageService;
     private final PdfParserService pdfParserService;
     private final ChunkingService chunkingService;
-    
-    public Document save(String fileName) {
-        Document document = new Document();
+    private final EmbeddingService embeddingService;
 
-        document.setFileName(fileName);
-        document.setUploadedAt(LocalDateTime.now());
 
-        return documentRepository.save(document);
-    }
-
-    @Transactional
     public void upload(MultipartFile file) throws IOException{
-
+        Document document = uploadAndChunk(file);
+        embeddingService.embedPendingChunks(document.getId());
+    }
+    
+    @Transactional
+    public Document uploadAndChunk(MultipartFile file) throws IOException {
         if (file.isEmpty()){
             throw new EmptyFileException("Uploaded file is empty.");
         }
@@ -58,11 +54,13 @@ public class DocumentService {
 
         for (Chunk chunk : chunks) {
             System.err.println(chunk);
-            System.err.println("*********************************************************************");
+            System.err.println("*******************************************");
             chunk.setDocumentId(document);
         }
         
         chunkRepository.saveAll(chunks);
-    } 
+
+        return document;
+    }
 
 }
